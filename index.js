@@ -19,6 +19,7 @@ import {
   createCard,
   getAllCards,
   updateCard,
+  getOneCard,
 } from "./controllers/index.js";
 
 // Імпортуємо функцію перевірки автентифікації
@@ -85,6 +86,7 @@ app.put("/girls/:id", updateModel);
 // Маршрути для отримання всіх продуктів, отримання одного продукту та створення нового продукту
 app.get("/card", getAllCards);
 app.post("/card", createCard);
+app.get("/girls/:id", getOneCard);
 app.put("/card/:id", updateCard);
 
 // Маршрут, що викликається, якщо запит не знайдено

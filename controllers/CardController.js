@@ -33,8 +33,23 @@ export const getAllCards = async (req, res) => {
   }
 };
 
+export const getOneCard = async (req, res) => {
+  try {
+    const cardId = req.params.id;
+    const card = await Card.findById(cardId);
 
+    if (!card) {
+      return res.status(404).json({ message: "Карта не знайдено" });
+    }
 
+    res.json(card);
+  } catch (error) {
+    console.error("Помилка при отриманні карти:", error);
+    res.status(500).json({
+      message: "Не вдалося отримати карту",
+    });
+  }
+};
 
 
 export const updateCard = async (req, res) => {
