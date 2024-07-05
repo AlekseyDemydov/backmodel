@@ -46,7 +46,7 @@ export const updateCard = async (req, res) => {
     if (!updateCard) {
       return res.status(404).json({ message: "Продукт не знайдено" });
     }
-    res.json(updatedModel);
+    res.json(updateCard);
   } catch (error) {
     console.error("Помилка при оновленні продукту:", error);
     res.status(500).json({ message: "Не вдалося оновити продукт" });
