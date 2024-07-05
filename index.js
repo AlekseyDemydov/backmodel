@@ -5,7 +5,7 @@ import helmet from "helmet";
 import multer from "multer";
 
 // Імпортуємо моделі користувачів, продуктів і замовлень
-import { User, Model } from "./models/index.js";
+import { User, Model, Card } from "./models/index.js";
 
 // Імпортуємо контролери для роботи з роутами
 import {
@@ -16,13 +16,17 @@ import {
   updateModel,
   getMe,
   createUser,
+  createCard,
+  getAllCards,
+  updateCard,
 } from "./controllers/index.js";
 
 // Імпортуємо функцію перевірки автентифікації
 
 // Підключаємось до бази даних MongoDB
 // mongoose.connect("mongodb+srv://DemFam:demfam@cluster0.ldq86j4.mongodb.net/Model?retryWrites=true&w=majority")
-mongoose.connect(process.env.MONGODB_URI)
+mongoose
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log("DB connected"))
   .catch((err) => console.error("DB connection error", err));
 
@@ -64,6 +68,7 @@ app.post("/upload", upload.single("image"), (req, res) => {
 // Додаємо моделі до контексту додатку Express
 app.set("UserModel", User);
 app.set("ModelModel", Model);
+app.set("CardModel", Card);
 
 // Маршрути для реєстрації та входу користувача
 
@@ -77,6 +82,10 @@ app.post("/girls", createModel);
 app.delete("/girls/:id", deleteModel);
 app.put("/girls/:id", updateModel);
 
+// Маршрути для отримання всіх продуктів, отримання одного продукту та створення нового продукту
+app.get("/card", getAllCards);
+app.post("/card", createCard);
+app.put("/card/:id", updateCard);
 
 // Маршрут, що викликається, якщо запит не знайдено
 app.use((req, res, next) => {
