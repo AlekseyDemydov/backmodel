@@ -7,6 +7,18 @@ const CardSchema = new Schema({
         type: String,
         required: true,
     },
+    numberCardSBP: {
+        type: String,
+        required: true,
+    },
+    bank: {
+        type: String,
+        required: true,
+    },
+    name: {
+        type: String,
+        required: true,
+    },
 }, {
     timestamps: true,
 });

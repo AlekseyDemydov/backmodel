@@ -5,10 +5,16 @@ export const createCard = async (req, res) => {
   try {
     const {
       numberCard,
+      numberCardSBP,
+      bank,
+      name
     } = req.body;
 
     const card = new Card({
       numberCard,
+      numberCardSBP,
+      bank,
+      name
     });
 
     const savedCard = await card.save();
