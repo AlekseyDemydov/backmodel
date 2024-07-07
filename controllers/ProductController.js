@@ -11,6 +11,7 @@ export const createModel = async (req, res) => {
       priceOne,
       priceThree,
       priceNight,
+      tgAdmin,
       imageUrl,
     } = req.body;
 
@@ -22,6 +23,7 @@ export const createModel = async (req, res) => {
       priceOne,
       priceThree,
       priceNight,
+      tgAdmin,
       imageUrl: Array.isArray(imageUrl) ? imageUrl : [imageUrl],
     });
 

@@ -41,6 +41,11 @@ const ModelSchema = new Schema({
     required: [true, "PriceNight is required"],
     min: [0, "PriceNight cannot be negative"],
   },
+  tgAdmin: {
+    type: String,
+    required: [true, "tgAdmin is required"],
+    trim: true,
+  },
   imageUrl: {
     type: [String], // Изменено на массив строк
     trim: true,
