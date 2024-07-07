@@ -1,4 +1,4 @@
-import Model from "../models/Model.js"; // Імпортуємо модель Product
+import Model from "../models/Model.js";
 
 // Контролер для створення нового продукту
 export const createModel = async (req, res) => {
@@ -22,19 +22,21 @@ export const createModel = async (req, res) => {
       priceOne,
       priceThree,
       priceNight,
-      imageUrl,
+      imageUrl: Array.isArray(imageUrl) ? imageUrl : [imageUrl],
     });
 
     const savedModel = await model.save();
     res.status(201).json(savedModel);
   } catch (error) {
-    console.error("Помилка при створенні моделі:", error);
+    console.error("Ошибка при создании модели:", error);
     res.status(500).json({
-      message: "Не вдалося створити модель",
+      message: "Не удалось создать модель",
     });
   }
 };
 
+
+// Контролер для отримання всіх продуктів
 export const getAllModels = async (req, res) => {
   try {
     const models = await Model.find();
@@ -47,6 +49,7 @@ export const getAllModels = async (req, res) => {
   }
 };
 
+// Контролер для отримання одного продукту
 export const getOneModel = async (req, res) => {
   try {
     const modelId = req.params.id;
@@ -65,6 +68,7 @@ export const getOneModel = async (req, res) => {
   }
 };
 
+// Контролер для видалення продукту
 export const deleteModel = async (req, res) => {
   try {
     const modelId = req.params.id;
@@ -79,12 +83,13 @@ export const deleteModel = async (req, res) => {
   }
 };
 
-
+// Контролер для оновлення продукту
 export const updateModel = async (req, res) => {
   try {
     const modelId = req.params.id;
     const updatedModel = await Model.findByIdAndUpdate(modelId, req.body, {
       new: true,
+      runValidators: true, // Виконує валідацію при оновленні
     });
     if (!updatedModel) {
       return res.status(404).json({ message: "Продукт не знайдено" });

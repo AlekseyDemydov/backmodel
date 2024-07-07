@@ -25,9 +25,8 @@ import {
 // Імпортуємо функцію перевірки автентифікації
 
 // Підключаємось до бази даних MongoDB
-// mongoose.connect("mongodb+srv://DemFam:demfam@cluster0.ldq86j4.mongodb.net/Model?retryWrites=true&w=majority")
-mongoose
-  .connect(process.env.MONGODB_URI)
+mongoose.connect("mongodb+srv://DemFam:demfam@cluster0.ldq86j4.mongodb.net/Model?retryWrites=true&w=majority")
+// mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("DB connected"))
   .catch((err) => console.error("DB connection error", err));
 
@@ -56,13 +55,21 @@ const storage = multer.diskStorage({
   },
 });
 
-// Налаштовуємо multer з нашою конфігурацією сховища
-const upload = multer({ storage });
+// Налаштовуємо multer з нашою конфігурацією сховища для загрузки множини файлів
+const upload = multer({ storage }).array("images", 10); // "images" — имя поля в форме для загрузки, 10 — максимальное количество файлов
 
-// Надаємо доступ до статичних файлів у папці "uploads"
-app.post("/upload", upload.single("image"), (req, res) => {
-  res.json({
-    url: `/uploads/${req.file.originalname}`,
+// Маршрут для обработки загрузки множества файлов
+app.post("/upload", (req, res) => {
+  upload(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      return res.status(500).json({ message: "Ошибка загрузки файлов", error: err });
+    } else if (err) {
+      return res.status(500).json({ message: "Не вдалося завантажити файли", error: err });
+    }
+    
+    // Все файлы успешно загружены, продолжаем обработку
+    const urls = req.files.map(file => `/uploads/${file.originalname}`);
+    res.json({ urls: urls });
   });
 });
 
