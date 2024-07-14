@@ -43,7 +43,7 @@ const ModelSchema = new Schema({
   },
   tgAdmin: {
     type: String,
-    required: [true, "tgAdmin is required"],
+    // required: [true, "tgAdmin is required"],
     trim: true,
   },
   imageUrl: {
