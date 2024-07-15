@@ -19,6 +19,10 @@ const CardSchema = new Schema({
         type: String,
         required: true,
     },
+    tgManager: {
+        type: String,
+        required: true,
+    },
 }, {
     timestamps: true,
 });

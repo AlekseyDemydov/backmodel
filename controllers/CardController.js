@@ -7,14 +7,16 @@ export const createCard = async (req, res) => {
       numberCard,
       numberCardSBP,
       bank,
-      name
+      name,
+      tgManager
     } = req.body;
 
     const card = new Card({
       numberCard,
       numberCardSBP,
       bank,
-      name
+      name,
+      tgManager
     });
 
     const savedCard = await card.save();
