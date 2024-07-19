@@ -4,6 +4,9 @@ import cors from "cors";
 import helmet from "helmet";
 import multer from "multer";
 import dotenv from "dotenv";
+import { fileURLToPath } from 'url';
+import fs from "fs";
+import path from "path";
 
 // Імпортуємо моделі користувачів, продуктів і замовлень
 import { User, Model, Card } from "./models/index.js";
@@ -27,6 +30,7 @@ import {
 dotenv.config();
 
 // Підключаємось до бази даних MongoDB
+// mongoose.connect('mongodb+srv://mushtinyurii:boWf6OI7UeXVGROo@clustermodel.xdthnf4.mongodb.net/Model?retryWrites=true&w=majority')
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("DB connected"))
   .catch((err) => console.error("DB connection error", err));
@@ -49,10 +53,19 @@ app.use(express.json()); // Для роботи з JSON даними
 app.use(helmet()); // Для підвищення безпеки
 app.use("/uploads", express.static("uploads"));
 
+// Переконайтеся, що директорія 'uploads' існує
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadDir = path.join(__dirname, 'uploads');
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 // Налаштовуємо сховище для завантажуваних файлів за допомогою multer
 const storage = multer.diskStorage({
   destination: (_, __, cb) => {
-    cb(null, "uploads");
+    cb(null, uploadDir);
   },
   filename: (_, file, cb) => {
     cb(null, file.originalname);
