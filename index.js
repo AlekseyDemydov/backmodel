@@ -34,6 +34,15 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Створюємо екземпляр додатку Express
 const app = express();
+const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
+
+// Налаштовуємо CORS
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
 
 // Використовуємо middlewares для Express
 app.use(cors()); // Для дозволу CORS
@@ -84,17 +93,17 @@ app.get("/me", getMe);
 app.post("/me", createUser);
 
 // Маршрути для роботи з моделями (продуктами)
-app.get("/models", getAllModels); // Змінив назву маршруту на більш універсальну
-app.get("/models/:id", getOneModel);
-app.post("/models", createModel);
-app.delete("/models/:id", deleteModel);
-app.put("/models/:id", updateModel);
+app.get("/girls", getAllModels);
+app.get("/girls/:id", getOneModel);
+app.post("/girls", createModel);
+app.delete("/girls/:id", deleteModel);
+app.put("/girls/:id", updateModel);
 
 // Маршрути для роботи з картками
-app.get("/cards", getAllCards); // Змінив назву маршруту на більш універсальну
-app.post("/cards", createCard);
-app.get("/cards/:id", getOneCard);
-app.put("/cards/:id", updateCard);
+app.get("/card", getAllCards);
+app.post("/card", createCard);
+app.get("/card/:id", getOneCard);
+app.put("/card/:id", updateCard);
 
 // Маршрут, що викликається, якщо запит не знайдено
 app.use((req, res, next) => {
