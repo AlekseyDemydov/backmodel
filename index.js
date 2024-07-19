@@ -30,7 +30,7 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Створюємо екземпляр додатку Express
 const app = express();
-const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
+const allowedOrigin = process.env.FRONTEND_URL || "https://modelin-9b12db911f01.herokuapp.com";
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
