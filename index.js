@@ -27,22 +27,19 @@ import {
 } from "./controllers/index.js";
 
 // Підключаємося до бази даних MongoDB
-// mongoose.connect("mongodb+srv://mushtinyurii:boWf6OI7UeXVGROo@clustermodel.xdthnf4.mongodb.net/Model?retryWrites=true&w=majority")
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("DB connected"))
   .catch((err) => console.error("DB connection error", err));
 
 // Створюємо екземпляр додатку Express
 const app = express();
-const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
 
 // Налаштовуємо CORS
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  methods: "GET, POST, PUT, DELETE",
+  allowedHeaders: "Content-Type, Authorization",
+}));
 
 // Використовуємо middlewares для Express
 app.use(express.json()); // Для роботи з JSON даними
