@@ -22,8 +22,6 @@ import {
   getOneCard,
 } from "./controllers/index.js";
 
-// Імпортуємо функцію перевірки автентифікації
-
 // Підключаємось до бази даних MongoDB
 // mongoose.connect("mongodb+srv://mushtinyurii:boWf6OI7UeXVGROo@clustermodel.xdthnf4.mongodb.net/Model?retryWrites=true&w=majority")
 mongoose.connect(process.env.MONGODB_URI)
@@ -33,14 +31,6 @@ mongoose.connect(process.env.MONGODB_URI)
 // Створюємо екземпляр додатку Express
 const app = express();
 const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
-
-// app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
-//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-//   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-//   res.setHeader('Access-Control-Allow-Credentials', true);
-//   next();
-// });
 
 // Використовуємо middlewares для Express
 app.use(cors({
@@ -55,27 +45,30 @@ app.use("/uploads", express.static("uploads"));
 
 // Налаштовуємо сховище для завантажуваних файлів за допомогою multer
 const storage = multer.diskStorage({
-  destination: (_, __, cb) => {
+  destination: (req, file, cb) => {
     cb(null, "uploads");
   },
-  filename: (_, file, cb) => {
+  filename: (req, file, cb) => {
     cb(null, file.originalname);
   },
 });
 
 // Налаштовуємо multer з нашою конфігурацією сховища для загрузки множини файлів
-const upload = multer({ storage }).array("images", 10); // "images" — имя поля в форме для загрузки, 10 — максимальное количество файлов
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB максимум для файлів
+}).array("images", 10); // "images" — ім'я поля в формі для завантаження, 10 — максимальна кількість файлів
 
-// Маршрут для обработки загрузки множества файлов
+// Маршрут для обробки завантаження множини файлів
 app.post("/upload", (req, res) => {
   upload(req, res, (err) => {
     if (err instanceof multer.MulterError) {
-      return res.status(500).json({ message: "Ошибка загрузки файлов", error: err });
+      return res.status(500).json({ message: "Помилка завантаження файлів", error: err });
     } else if (err) {
       return res.status(500).json({ message: "Не вдалося завантажити файли", error: err });
     }
     
-    // Все файлы успешно загружены, продолжаем обработку
+    // Усі файли успішно завантажені, продовжуємо обробку
     const urls = req.files.map(file => `/uploads/${file.originalname}`);
     res.json({ urls: urls });
   });
@@ -87,7 +80,6 @@ app.set("ModelModel", Model);
 app.set("CardModel", Card);
 
 // Маршрути для реєстрації та входу користувача
-
 app.get("/me", getMe);
 app.post("/me", createUser);
 
@@ -98,7 +90,7 @@ app.post("/girls", createModel);
 app.delete("/girls/:id", deleteModel);
 app.put("/girls/:id", updateModel);
 
-// Маршрути для отримання всіх продуктів, отримання одного продукту та створення нового продукту
+// Маршрути для отримання всіх карток, отримання однієї картки та створення нової картки
 app.get("/card", getAllCards);
 app.post("/card", createCard);
 app.get("/card/:id", getOneCard);
