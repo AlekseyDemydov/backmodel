@@ -3,8 +3,12 @@ import mongoose from "mongoose";
 import cors from "cors";
 import helmet from "helmet";
 import multer from "multer";
+import dotenv from "dotenv";
 
-// Імпортуємо моделі користувачів, продуктів і замовлень
+// Завантаження середовищних змінних з .env файлу
+dotenv.config();
+
+// Імпортуємо моделі користувачів, продуктів і карток
 import { User, Model, Card } from "./models/index.js";
 
 // Імпортуємо контролери для роботи з роутами
@@ -22,9 +26,7 @@ import {
   getOneCard,
 } from "./controllers/index.js";
 
-// Імпортуємо функцію перевірки автентифікації
-
-// Підключаємось до бази даних MongoDB
+// Підключаємося до бази даних MongoDB
 // mongoose.connect("mongodb+srv://mushtinyurii:boWf6OI7UeXVGROo@clustermodel.xdthnf4.mongodb.net/Model?retryWrites=true&w=majority")
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("DB connected"))
@@ -32,7 +34,6 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Створюємо екземпляр додатку Express
 const app = express();
-
 
 // Використовуємо middlewares для Express
 app.use(cors()); // Для дозволу CORS
@@ -50,19 +51,24 @@ const storage = multer.diskStorage({
   },
 });
 
-// Налаштовуємо multer з нашою конфігурацією сховища для загрузки множини файлів
-const upload = multer({ storage }).array("images", 10); // "images" — имя поля в форме для загрузки, 10 — максимальное количество файлов
+// Налаштовуємо multer з нашою конфігурацією сховища для завантаження кількох файлів
+const upload = multer({ storage }).array("images", 10); // "images" — ім'я поля в формі для завантаження, 10 — максимальна кількість файлів
 
-// Маршрут для обработки загрузки множества файлов
+// Маршрут для обробки завантаження кількох файлів
 app.post("/upload", (req, res) => {
   upload(req, res, (err) => {
     if (err instanceof multer.MulterError) {
-      return res.status(500).json({ message: "Ошибка загрузки файлов", error: err });
+      return res.status(500).json({ message: "Помилка завантаження файлів", error: err });
     } else if (err) {
       return res.status(500).json({ message: "Не вдалося завантажити файли", error: err });
     }
     
-    // Все файлы успешно загружены, продолжаем обработку
+    // Перевірка наявності файлів у запиті
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "Файли не були завантажені" });
+    }
+    
+    // Все файли успішно завантажено, продовжуємо обробку
     const urls = req.files.map(file => `/uploads/${file.originalname}`);
     res.json({ urls: urls });
   });
@@ -74,22 +80,21 @@ app.set("ModelModel", Model);
 app.set("CardModel", Card);
 
 // Маршрути для реєстрації та входу користувача
-
 app.get("/me", getMe);
 app.post("/me", createUser);
 
-// Маршрути для отримання всіх продуктів, отримання одного продукту та створення нового продукту
-app.get("/girls", getAllModels);
-app.get("/girls/:id", getOneModel);
-app.post("/girls", createModel);
-app.delete("/girls/:id", deleteModel);
-app.put("/girls/:id", updateModel);
+// Маршрути для роботи з моделями (продуктами)
+app.get("/models", getAllModels); // Змінив назву маршруту на більш універсальну
+app.get("/models/:id", getOneModel);
+app.post("/models", createModel);
+app.delete("/models/:id", deleteModel);
+app.put("/models/:id", updateModel);
 
-// Маршрути для отримання всіх продуктів, отримання одного продукту та створення нового продукту
-app.get("/card", getAllCards);
-app.post("/card", createCard);
-app.get("/card/:id", getOneCard);
-app.put("/card/:id", updateCard);
+// Маршрути для роботи з картками
+app.get("/cards", getAllCards); // Змінив назву маршруту на більш універсальну
+app.post("/cards", createCard);
+app.get("/cards/:id", getOneCard);
+app.put("/cards/:id", updateCard);
 
 // Маршрут, що викликається, якщо запит не знайдено
 app.use((req, res, next) => {
