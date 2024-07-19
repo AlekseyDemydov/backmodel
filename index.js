@@ -25,7 +25,7 @@ import {
 // Імпортуємо функцію перевірки автентифікації
 
 // Підключаємось до бази даних MongoDB
-// mongoose.connect("mongodb+srv://agdemidof:Eb8VdtVtoY0Qyp74@clustermy.vwupvtc.mongodb.net/Model?retryWrites=true&w=majority")
+// mongoose.connect("mongodb+srv://mushtinyurii:boWf6OI7UeXVGROo@clustermodel.xdthnf4.mongodb.net/Model?retryWrites=true&w=majority")
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("DB connected"))
   .catch((err) => console.error("DB connection error", err));
