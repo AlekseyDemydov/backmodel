@@ -43,7 +43,12 @@ app.use((req, res, next) => {
 });
 
 // Використовуємо middlewares для Express
-app.use(cors()); // Для дозволу CORS
+app.use(cors({
+  origin: allowedOrigin,
+  methods: ['GET', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'],
+  allowedHeaders: ['X-Requested-With', 'content-type'],
+  credentials: true,
+}));
 app.use(express.json()); // Для роботи з JSON даними
 app.use(helmet()); // Для підвищення безпеки
 app.use("/uploads", express.static("uploads"));
