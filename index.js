@@ -4,6 +4,7 @@ import cors from "cors";
 import helmet from "helmet";
 import multer from "multer";
 import dotenv from "dotenv";
+import http from 'http';
 import { fileURLToPath } from 'url';
 import fs from "fs";
 import path from "path";
@@ -30,17 +31,17 @@ import {
 dotenv.config();
 
 // Підключаємось до бази даних MongoDB
-// mongoose.connect('mongodb+srv://mushtinyurii:boWf6OI7UeXVGROo@clustermodel.xdthnf4.mongodb.net/Model?retryWrites=true&w=majority')
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect('mongodb+srv://mushtinyurii:boWf6OI7UeXVGROo@clustermodel.xdthnf4.mongodb.net/Model?retryWrites=true&w=majority')
+// mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log("DB connected"))
   .catch((err) => console.error("DB connection error", err));
 
 // Створюємо екземпляр додатку Express
 const app = express();
-const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
+// const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:3000";
 
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -123,10 +124,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal Server Error" });
 });
 
-// Порт, на якому запускається сервер
-const PORT = process.env.PORT || 4444;
 
-// Прослуховуємо порт та виводимо повідомлення про запуск сервера
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// Запускаємо сервер на HTTPS
+http.createServer(app).listen(process.env.PORT, process.env.HOST, () => {
+  console.log(`Server is running on port ${process.env.PORT}`);
 });
