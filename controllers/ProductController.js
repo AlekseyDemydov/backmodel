@@ -13,6 +13,15 @@ export const createModel = async (req, res) => {
       priceNight,
       tgAdmin,
       imageUrl,
+      anal,
+      domination,
+      bondage,
+      massage,
+      gmg,
+      svyazivanie,
+      mgm,
+      rolePlaying,
+
     } = req.body;
 
     const model = new Model({
@@ -25,6 +34,14 @@ export const createModel = async (req, res) => {
       priceNight,
       tgAdmin,
       imageUrl: Array.isArray(imageUrl) ? imageUrl : [imageUrl],
+      anal,
+      domination,
+      bondage,
+      massage,
+      gmg,
+      svyazivanie,
+      mgm,
+      rolePlaying,
     });
 
     const savedModel = await model.save();
